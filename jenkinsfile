@@ -3,8 +3,29 @@ pipeline {
     stages {
         stage('SCM Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/PoorniKamalGitHub/terraform-elb'
+                git branch: 'master', url: 'https://github.com/PoorniKamalGitHub/terraform-elb.git'
             }
+        }
+
+        stage('compile the code') { 
+            steps { 
+                withMaven(globalMavenSettingsConfig: '', jdk: 'JAVA_HOME', maven: 'MAVEN_HOME', mavenSettingsConfig: '', traceability: true)
+                { sh 'mvn compile' } //mvn compile command to compile the code
+            } 
+        } 
+
+        stage('execute unit test framework') { 
+            steps { 
+                withMaven(globalMavenSettingsConfig: '', jdk: 'JAVA_HOME', maven: 'MAVEN_HOME', mavenSettingsConfig: '', traceability: true)
+                { sh 'mvn test' } //mnv test to perform unit testing
+            } 
+        }
+        
+        stage('generate artifact') { 
+            steps { 
+                withMaven(globalMavenSettingsConfig: '', jdk: 'JAVA_HOME', maven: 'MAVEN_HOME', mavenSettingsConfig: '', traceability: true)
+                { sh 'mvn package' } //mnv package to generate artifact
+            } 
         }
     }
 }
